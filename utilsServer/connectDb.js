@@ -8,7 +8,7 @@ async function connectDb() {
       useCreateIndex: true,
       useFindAndModify: false
     });
-    console.log("Mongodb connected");
+    console.log("Mongodb connected to nextjs-social-media");
   } catch (error) {
     console.log(error);
     process.exit(1);

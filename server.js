@@ -1,23 +1,27 @@
-const app = require('express');
+const express = require('express');
+const app = express();
 const server = require('http').Server(app);
 const next = require('next');
-const dev = process.env.NODE_ENV !== 'production'
-const nextApp = next({dev})
-const handler = nextApp.getRequestHandler()
-require('dotenv').config({path: "./config.env"})
-const connectDb = require('./utilsServer/connectDb')
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json()); // this is the body parser
-
-
+const dev = process.env.NODE_ENV !== 'production';
+const nextApp = next({ dev });
+const handle = nextApp.getRequestHandler();
+require('dotenv').config({ path: './config.env' });
+const connectDb = require('./utilsServer/connectDb');
 connectDb();
+app.use(express.json());
+const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV;
 
 nextApp.prepare().then(() => {
-   app.call('*', (req, res) => handler(req, res));
+/* 	app.use('/api/signup', require('./api/signup'));
+	app.use('/api/auth', require('./api/auth')); */
 
-   server.listen(PORT, err => {
-      if (err) throw err;
-      console.log(`Express server listening ->  http://localhost:${PORT} in ${NODE_ENV} mode`)
-   })
-})
+	app.all('*', (req, res) => handle(req, res)); 
+
+	server.listen(PORT, err => {
+		if (err) throw err;
+		console.log(
+			`Express server listening ->  http://localhost:${PORT} in ${NODE_ENV} mode`
+		);
+	});
+});
