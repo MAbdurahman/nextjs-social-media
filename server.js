@@ -16,7 +16,7 @@ nextApp.prepare().then(() => {
 /* 	app.use('/api/signup', require('./api/signup'));
 	app.use('/api/auth', require('./api/auth')); */
 
-	app.all('*', (req, res) => handle(req, res)); 
+	app.all('*', (req, res) => handle(req, res));
 
 	server.listen(PORT, err => {
 		if (err) throw err;
@@ -24,4 +24,6 @@ nextApp.prepare().then(() => {
 			`Express server listening ->  http://localhost:${PORT} in ${NODE_ENV} mode`
 		);
 	});
+}).catch(function(err) {
+	console.log(err)
 });
