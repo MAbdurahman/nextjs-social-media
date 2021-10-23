@@ -20,27 +20,31 @@ export const HeaderMessage = () => {
 };
 
 export const FooterMessage = () => {
-   <>
-		{signupRoute ? (
-			<>
-				<Message attached='bottom' warning>
-					<Icon name='help' />
-					Existing User? <Link href='/login'>Login Here Instead</Link>
-				</Message>
-				<Divider hidden />
-			</>
-		) : (
-			<>
-				<Message attached='bottom' info>
-					<Icon name='lock' />
-					<Link href='/reset'>Forgot Password?</Link>
-				</Message>
+	const router = useRouter();
+	const signupRoute = router.pathname === '/signup';
+	return (
+		<>
+			{signupRoute ? (
+				<>
+					<Message attached='bottom' warning>
+						<Icon name='help' />
+						Existing User? <Link href='/login'>Login Here Instead</Link>
+					</Message>
+					<Divider hidden />
+				</>
+			) : (
+				<>
+					<Message attached='bottom' info>
+						<Icon name='lock' />
+						<Link href='/reset'>Forgot Password?</Link>
+					</Message>
 
-				<Message attached='bottom' warning>
-					<Icon name='help' />
-					New User? <Link href='/signup'>Signup Here</Link> Instead{' '}
-				</Message>
-			</>
-		)}
-	</>;
+					<Message attached='bottom' warning>
+						<Icon name='help' />
+						New User? <Link href='/signup'>Signup Here</Link> Instead{' '}
+					</Message>
+				</>
+			)}
+		</>
+	);
 };
