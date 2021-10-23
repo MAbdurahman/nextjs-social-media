@@ -56,9 +56,9 @@ export default function Signup() {
 
 	const checkUsername = async () => {
 		setUsernameLoading(true);
-
 		try {
 			cancel && cancel();
+
 			const CancelToken = axios.CancelToken;
 
 			const res = await axios.get(`${baseUrl}/api/signup/${username}`, {
@@ -67,15 +67,15 @@ export default function Signup() {
 				}),
 			});
 
-         if (errorMsg !== null) setErrorMsg(null);
+			if (errorMsg !== null) setErrorMsg(null);
 
 			if (res.data === 'Available') {
 				setUsernameAvailable(true);
 				setUser(prev => ({ ...prev, username }));
 			}
 		} catch (error) {
-			setErrorMsg('Username Is Not Available!');
-         setUsernameAvailable(false)
+			setErrorMsg('Username Is Not Available');
+			setUsernameAvailable(false);
 		}
 		setUsernameLoading(false);
 	};
@@ -95,7 +95,6 @@ export default function Signup() {
 		}
 
 		await registerUser(user, profilePicUrl, setErrorMsg, setFormLoading);
-
 	};
 	useEffect(() => {
 		const isUser = Object.values({ name, email, password, bio }).every(item =>
