@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Message, Segment, Divider } from 'semantic-ui-react';
-/* import { loginUser } from '../utils/authUser'; */
+import { loginUser } from '../utils/authUser';
 import {
 	HeaderMessage,
 	FooterMessage,
@@ -28,8 +28,8 @@ export default function Login() {
 
 	const handleSubmit = async e => {
 		e.preventDefault();
-
-		// await loginUser(user, setErrorMsg, setFormLoading);
+		await loginUser(user, setErrorMsg, setFormLoading);
+		
 	};
 
 	useEffect(() => {
