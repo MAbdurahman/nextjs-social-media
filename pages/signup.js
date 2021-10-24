@@ -6,7 +6,12 @@ import {
 } from './../components/common/WelcomeMessage';
 import CommonInputs from '../components/Common/CommonInputs';
 import ImageDropDiv from '../components/Common/ImageDropDiv';
-const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
+import axios from 'axios';
+import baseUrl from '../utils/baseUrl';
+import { registerUser } from '../utils/authUser';
+import uploadPic from '../utils/uploadPicToCloudinary';
+/* const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/; */
+let cancel;
 
 export default function Signup() {
 	//**************** variables ****************//
@@ -41,7 +46,7 @@ export default function Signup() {
 	//**************** functions ****************//
 	const handleChange = e => {
 		const { name, value, files } = e.target;
-      if (name === 'media') {
+		if (name === 'media') {
 			setMedia(files[0]);
 			setMediaPreview(URL.createObjectURL(files[0]));
 		}
@@ -49,13 +54,48 @@ export default function Signup() {
 		setUser(prev => ({ ...prev, [name]: value }));
 	};
 
-	const checkUserName = async () => {
-		console.log('checkUserName');
+	const checkUsername = async () => {
+		setUsernameLoading(true);
+		try {
+			cancel && cancel();
+
+			const CancelToken = axios.CancelToken;
+			
+			const res = await axios.get(`${baseUrl}/api/signup/${username}`, {
+				cancelToken: new CancelToken(canceler => {
+					cancel = canceler;
+				}),
+			});
+
+			if (res.data === 'Available') {
+				if (errorMsg !== null) setErrorMsg(null);
+				setUsernameAvailable(true);
+				setUser(prev => ({ ...prev, username }));
+			}
+	
+		} catch (error) {
+			setErrorMsg('Username Is Not Available!');
+			// console.log(`the error is ${error}`)
+			setUsernameAvailable(false);
+		}
+		setUsernameLoading(false);
 	};
 
-	const handleSubmit = e => {
+	const handleSubmit = async e => {
 		e.preventDefault();
-		console.log('handleSubmit');
+		setFormLoading(true);
+
+		let profilePicUrl;
+		if (media !== null) {
+			profilePicUrl = await uploadPic(media);
+		}
+
+		if (media !== null && !profilePicUrl) {
+			setFormLoading(false);
+			return setErrorMsg('Error Uploading Image!');
+		}
+
+		await registerUser(user, profilePicUrl, setErrorMsg, setFormLoading);
 	};
 	useEffect(() => {
 		const isUser = Object.values({ name, email, password, bio }).every(item =>
@@ -64,7 +104,9 @@ export default function Signup() {
 		isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
 	}, [user]);
 
-	useEffect(() => {}, []);
+	useEffect(() => {
+		username === '' ? setUsernameAvailable(false) : checkUsername();
+	}, [username]);
 	return (
 		<>
 			<HeaderMessage />
@@ -137,14 +179,7 @@ export default function Signup() {
 						label='Username'
 						placeholder='Username'
 						value={username}
-						onChange={e => {
-							setUsername(e.target.value);
-							if (regexUserName.test(e.target.value)) {
-								setUsernameAvailable(true);
-							} else {
-								setUsernameAvailable(false);
-							}
-						}}
+						onChange={e => setUsername(e.target.value)}
 						fluid
 						icon={usernameAvailable ? 'check' : 'close'}
 						iconPosition='left'
