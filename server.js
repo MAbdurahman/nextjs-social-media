@@ -12,18 +12,21 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV;
 
-nextApp.prepare().then(() => {
-/* 	app.use('/api/signup', require('./api/signup'));
-	app.use('/api/auth', require('./api/auth')); */
+nextApp
+	.prepare()
+	.then(() => {
+		app.use('/api/signup', require('./api/signup'));
+		app.use('/api/auth', require('./api/auth'));
 
-	app.all('*', (req, res) => handle(req, res));
+		app.all('*', (req, res) => handle(req, res));
 
-	server.listen(PORT, err => {
-		if (err) throw err;
-		console.log(
-			`Express server listening ->  http://localhost:${PORT} in ${NODE_ENV} mode`
-		);
+		server.listen(PORT, err => {
+			if (err) throw err;
+			console.log(
+				`Express server listening ->  http://localhost:${PORT} in ${NODE_ENV} mode`
+			);
+		});
+	})
+	.catch(function (err) {
+		console.log(err);
 	});
-}).catch(function(err) {
-	console.log(err)
-});
