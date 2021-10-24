@@ -10,7 +10,7 @@ import axios from 'axios';
 import baseUrl from '../utils/baseUrl';
 import { registerUser } from '../utils/authUser';
 import uploadPic from '../utils/uploadPicToCloudinary';
-const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
+/* const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/; */
 let cancel;
 
 export default function Signup() {
@@ -60,21 +60,22 @@ export default function Signup() {
 			cancel && cancel();
 
 			const CancelToken = axios.CancelToken;
-
+			
 			const res = await axios.get(`${baseUrl}/api/signup/${username}`, {
 				cancelToken: new CancelToken(canceler => {
 					cancel = canceler;
 				}),
 			});
 
-			if (errorMsg !== null) setErrorMsg(null);
-
 			if (res.data === 'Available') {
+				if (errorMsg !== null) setErrorMsg(null);
 				setUsernameAvailable(true);
 				setUser(prev => ({ ...prev, username }));
 			}
+	
 		} catch (error) {
-			setErrorMsg('Username Is Not Available');
+			setErrorMsg('Username Is Not Available!');
+			// console.log(`the error is ${error}`)
 			setUsernameAvailable(false);
 		}
 		setUsernameLoading(false);
@@ -178,14 +179,7 @@ export default function Signup() {
 						label='Username'
 						placeholder='Username'
 						value={username}
-						onChange={e => {
-							setUsername(e.target.value);
-							if (regexUserName.test(e.target.value)) {
-								setUsernameAvailable(true);
-							} else {
-								setUsernameAvailable(false);
-							}
-						}}
+						onChange={e => setUsername(e.target.value)}
 						fluid
 						icon={usernameAvailable ? 'check' : 'close'}
 						iconPosition='left'
