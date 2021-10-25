@@ -5,6 +5,7 @@ import {
 	HeaderMessage,
 	FooterMessage,
 } from '../components/Common/WelcomeMessage';
+import cookie from 'js-cookie';
 
 export default function Login() {
 	//**************** variables ****************//
@@ -23,13 +24,11 @@ export default function Login() {
 	const handleChange = e => {
 		const { name, value } = e.target;
 		setUser(prev => ({ ...prev, [name]: value }));
-		
 	};
 
 	const handleSubmit = async e => {
 		e.preventDefault();
 		await loginUser(user, setErrorMsg, setFormLoading);
-		
 	};
 
 	useEffect(() => {
@@ -38,6 +37,12 @@ export default function Login() {
 		);
 		isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
 	}, [user]);
+
+	useEffect(() => {
+		document.title = 'Welcome Back';
+		const userEmail = cookie.get('userEmail');
+		if (userEmail) setUser(prev => ({ ...prev, email: userEmail }));
+	}, []);
 
 	return (
 		<>

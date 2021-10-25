@@ -37,6 +37,13 @@ export const loginUser = async (user, setError, setLoading) => {
 	setLoading(false);
 };
 
+export const logoutUser = email => {
+	cookie.set('userEmail', email);
+	cookie.remove('token');
+	Router.push('/login');
+	Router.reload();
+};
+
 export const redirectUser = (ctx, location) => {
 	if (ctx.req) {
 		ctx.res.writeHead(302, { Location: location });
