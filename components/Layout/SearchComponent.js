@@ -14,8 +14,17 @@ export default function SearchComponent() {
 	//**************** functions ****************//
 	const handleChange = async e => {
 		const { value } = e.target;
+		setText(value.trim())
 
-		setText(value);
+		if (value.length === 0) {
+			return setText(value)
+		}
+		if (value.trim() === 0) {
+			setLoading(false);
+			return;
+		}
+
+		setText(value.trim());
 		setLoading(true);
 
 		try {
@@ -31,16 +40,26 @@ export default function SearchComponent() {
 			});
 
 			if (res.data.length === 0) {
+				results.length > 0 && setResults([]);
 				return setLoading(false);
 			}
 
 			setResults(res.data);
 		} catch (error) {
-			alert('Error Searching');
+			console.log('Error Searching');
+			setLoading(false)
 		}
 
 		setLoading(false);
 	};
+
+/* 	useEffect(() => {
+		if (text.length === 0 && loading) {
+			setLoading(false)
+		}
+
+	}, [text]); */
+
 	return (
 		<Search
 			onBlur={() => {
