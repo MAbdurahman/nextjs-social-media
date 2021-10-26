@@ -4,6 +4,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const UserModel = require('../models/UserModel');
 
 router.get('/:searchText', authMiddleware, async (req, res) => {
+
 	try {
 		const { searchText } = req.params;
 
@@ -16,9 +17,11 @@ router.get('/:searchText', authMiddleware, async (req, res) => {
 		});
 
 		return res.status(200).json(results);
+
 	} catch (error) {
 		console.error(error);
-		return res.status(500).send(`Server error`);
+		return res.status(500).send(`Server Error`);
+
 	}
 });
 
