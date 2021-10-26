@@ -13,7 +13,7 @@ import {
 import nprogress from 'nprogress';
 import Router from 'next/router';
 import SideMenu from './SideMenu';
-import Search from './Search';
+import Search from './SearchComponent';
 
 function Layout({ children, user }) {
 	const contextRef = createRef();
