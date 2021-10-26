@@ -130,12 +130,13 @@ router.delete('/:postId', authMiddleware, async (req, res) => {
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-		
+
 	}
 });
 
-// LIKE A POST
-
+/*=============================================
+               Like A Post
+================================================*/
 router.post('/like/:postId', authMiddleware, async (req, res) => {
 	try {
 		const { postId } = req.params;
@@ -150,21 +151,23 @@ router.post('/like/:postId', authMiddleware, async (req, res) => {
 			post.likes.filter(like => like.user.toString() === userId).length > 0;
 
 		if (isLiked) {
-			return res.status(401).send('Post already liked');
+			return res.status(401).send('Post Already Liked');
 		}
 
 		await post.likes.unshift({ user: userId });
 		await post.save();
 
-		return res.status(200).send('Post liked');
+		return res.status(200).send('Post Liked');
+
 	} catch (error) {
 		console.error(error);
-		return res.status(500).send(`Server error`);
+		return res.status(500).send(`Server Error`);
 	}
 });
 
-// UNLIKE A POST
-
+/*=============================================
+            Unlike A Post
+================================================*/
 router.put('/unlike/:postId', authMiddleware, async (req, res) => {
 	try {
 		const { postId } = req.params;
@@ -180,7 +183,7 @@ router.put('/unlike/:postId', authMiddleware, async (req, res) => {
 			0;
 
 		if (isLiked) {
-			return res.status(401).send('Post not liked before');
+			return res.status(401).send('Post Not Liked Before');
 		}
 
 		const index = post.likes
@@ -192,27 +195,32 @@ router.put('/unlike/:postId', authMiddleware, async (req, res) => {
 		await post.save();
 
 		return res.status(200).send('Post Unliked');
+
 	} catch (error) {
 		console.error(error);
-		return res.status(500).send(`Server error`);
+		return res.status(500).send(`Server Error`);
+
 	}
 });
 
-// GET ALL LIKES OF A POST
-
+/*=============================================
+				Get All Likes Of A Post
+================================================*/
 router.get('/like/:postId', authMiddleware, async (req, res) => {
 	try {
 		const { postId } = req.params;
 
 		const post = await PostModel.findById(postId).populate('likes.user');
 		if (!post) {
-			return res.status(404).send('No Post found');
+			return res.status(404).send('No Post Found');
 		}
 
 		return res.status(200).json(post.likes);
+		
 	} catch (error) {
 		console.error(error);
-		return res.status(500).send(`Server error`);
+		return res.status(500).send(`Server Error`);
+
 	}
 });
 
