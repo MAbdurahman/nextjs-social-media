@@ -216,7 +216,7 @@ router.get('/like/:postId', authMiddleware, async (req, res) => {
 		}
 
 		return res.status(200).json(post.likes);
-		
+
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
@@ -224,8 +224,9 @@ router.get('/like/:postId', authMiddleware, async (req, res) => {
 	}
 });
 
-// CREATE A COMMENT
-
+/*=============================================
+				Create A Comment
+================================================*/
 router.post('/comment/:postId', authMiddleware, async (req, res) => {
 	try {
 		const { postId } = req.params;
@@ -233,11 +234,11 @@ router.post('/comment/:postId', authMiddleware, async (req, res) => {
 		const { text } = req.body;
 
 		if (text.length < 1)
-			return res.status(401).send('Comment should be atleast 1 character');
+			return res.status(401).send('Comment should be at least 1 character');
 
 		const post = await PostModel.findById(postId);
 
-		if (!post) return res.status(404).send('Post not found');
+		if (!post) return res.status(404).send('Post Not Found');
 
 		const newComment = {
 			_id: uuid(),
@@ -250,25 +251,27 @@ router.post('/comment/:postId', authMiddleware, async (req, res) => {
 		await post.save();
 
 		return res.status(200).json(newComment._id);
+
 	} catch (error) {
 		console.error(error);
-		return res.status(500).send(`Server error`);
+		return res.status(500).send(`Server Error`);
 	}
 });
 
-// DELETE A COMMENT
-
+/*=============================================
+            Delete A Comment
+================================================*/
 router.delete('/:postId/:commentId', authMiddleware, async (req, res) => {
 	try {
 		const { postId, commentId } = req.params;
 		const { userId } = req;
 
 		const post = await PostModel.findById(postId);
-		if (!post) return res.status(404).send('Post not found');
+		if (!post) return res.status(404).send('Post Not Found');
 
 		const comment = post.comments.find(comment => comment._id === commentId);
 		if (!comment) {
-			return res.status(404).send('No Comment found');
+			return res.status(404).send('No Comment Found');
 		}
 
 		const user = await UserModel.findById(userId);
@@ -288,15 +291,18 @@ router.delete('/:postId/:commentId', authMiddleware, async (req, res) => {
 		if (comment.user.toString() !== userId) {
 			if (user.role === 'root') {
 				await deleteComment();
+
 			} else {
 				return res.status(401).send('Unauthorized');
+
 			}
 		}
 
 		await deleteComment();
+		
 	} catch (error) {
 		console.error(error);
-		return res.status(500).send(`Server error`);
+		return res.status(500).send(`Server Error`);
 	}
 });
 
