@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, Image, Search } from 'semantic-ui-react';
 import axios from 'axios';
 import cookie from 'js-cookie';
@@ -14,17 +14,10 @@ export default function SearchComponent() {
 	//**************** functions ****************//
 	const handleChange = async e => {
 		const { value } = e.target;
-		setText(value.trim())
-
-		if (value.length === 0) {
-			return setText(value)
-		}
-		if (value.trim() === 0) {
-			setLoading(false);
-			return;
-		}
-
 		setText(value.trim());
+
+		if (value.length === 0 || value.trim().length === 0) return;
+
 		setLoading(true);
 
 		try {
@@ -43,22 +36,19 @@ export default function SearchComponent() {
 				results.length > 0 && setResults([]);
 				return setLoading(false);
 			}
-
 			setResults(res.data);
 		} catch (error) {
-			console.log('Error Searching');
-			setLoading(false)
+			console.log(error);
 		}
 
 		setLoading(false);
 	};
 
-/* 	useEffect(() => {
+	useEffect(() => {
 		if (text.length === 0 && loading) {
-			setLoading(false)
+			setLoading(false);
 		}
-
-	}, [text]); */
+	}, [text]);
 
 	return (
 		<Search
@@ -79,7 +69,6 @@ export default function SearchComponent() {
 }
 
 const ResultRenderer = ({ _id, profilePicUrl, name }) => {
-
 	return (
 		<List key={_id}>
 			<List.Item>

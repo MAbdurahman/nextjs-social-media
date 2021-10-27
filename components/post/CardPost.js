@@ -11,7 +11,7 @@ import {
 	Modal,
 } from 'semantic-ui-react';
 import PostComments from './PostComments';
-import CommentInputField from './CommentInputField';
+import CommentInputField from './CommonInputField';
 import Link from 'next/link'
 
 
