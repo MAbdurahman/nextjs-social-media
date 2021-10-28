@@ -12,7 +12,7 @@ import {
 	Modal,
 } from 'semantic-ui-react';
 import PostComments from './PostComments';
-import CommentInputField from './CommonInputField';
+import CommentInputField from './CommentInputField';
 import calculateTime from '../../utils/calculateTime';
 
 export default function CardPost({ post, user, setPosts, setShowToastr }) {
@@ -72,6 +72,65 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 							</Link>
 						</Card.Header>
 						<Card.Meta>{calculateTime(post.createdAt)}</Card.Meta>
+
+						{post.location && <Card.Meta content={post.location} />}
+
+						<Card.Description
+							style={{
+								fontSize: '17px',
+								letterSpacing: '0.1px',
+								wordSpacing: '0.35px',
+							}}
+						>
+							{post.text}
+						</Card.Description>
+					</Card.Content>
+					<Card.Content extra>
+						<Icon
+							name={isLiked ? 'heart' : 'heart outline'}
+							color='red'
+							style={{ cursor: 'pointer' }}
+						/>
+						
+						{likes.length > 0 && (
+							<span className='spanLikesList'>
+								{`${likes.length} ${
+									likes.length === 1 ? 'like' : 'likes'
+								}`}
+							</span>
+						)}
+						<Icon
+							name='comment outline'
+							style={{ marginLeft: '7px' }}
+							color='blue'
+						/>
+						{comments.length > 0 &&
+							comments.map(
+								(comment, i) =>
+									i < 3 && (
+										<PostComments
+											key={comment._id}
+											comment={comment}
+											postId={post._id}
+											user={user}
+											setComments={setComments}
+										/>
+									)
+							)}
+						{comments.length > 3 && (
+							<Button
+								content='View More'
+								color='teal'
+								basic
+								circular
+							/>
+						)}
+						<Divider hidden />
+						<CommentInputField
+							user={user}
+							postId={post._id}
+							setComments={setComments}
+						/>
 					</Card.Content>
 				</Card>
 			</Segment>

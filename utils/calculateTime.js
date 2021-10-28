@@ -12,14 +12,17 @@ const calculateTime = createdAt => {
 				Today <Moment format='hh:mm A'>{createdAt}</Moment>
 			</>
 		);
+
 	} else if (diffInHours > 24 && diffInHours < 36) {
 		return (
 			<>
 				Yesterday <Moment format='hh:mm A'>{createdAt}</Moment>
 			</>
 		);
-	} else if (diffInHours > 36) {
+
+	} else {
 		return <Moment format='DD/MM/YYYY hh:mm A'>{createdAt}</Moment>;
+		
 	}
 };
 
