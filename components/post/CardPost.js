@@ -14,6 +14,10 @@ import {
 import PostComments from './PostComments';
 import CommentInputField from './CommentInputField';
 import calculateTime from '../../utils/calculateTime';
+import { deletePost, likePost } from '../../utils/postActions';
+import LikesList from './LikesList';
+import ImageModal from './ImageModal';
+import NoImageModal from './NoImageModal';
 
 export default function CardPost({ post, user, setPosts, setShowToastr }) {
 	//**************** variables ****************//
@@ -62,7 +66,14 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 									<Header as='h4' content='Are you sure?' />
 									<p>This action is irreversible!</p>
 
-									<Button color='red' icon='trash' content='Delete' />
+									<Button
+										color='red'
+										icon='trash'
+										content='Delete'
+										onClick={() =>
+											deletePost(post._id, setPosts, setShowToastr)
+										}
+									/>
 								</Popup>
 							</>
 						)}
@@ -91,7 +102,7 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 							color='red'
 							style={{ cursor: 'pointer' }}
 						/>
-						
+
 						{likes.length > 0 && (
 							<span className='spanLikesList'>
 								{`${likes.length} ${
@@ -118,12 +129,7 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 									)
 							)}
 						{comments.length > 3 && (
-							<Button
-								content='View More'
-								color='teal'
-								basic
-								circular
-							/>
+							<Button content='View More' color='teal' basic circular />
 						)}
 						<Divider hidden />
 						<CommentInputField

@@ -75,7 +75,6 @@ export default function Signup() {
 	
 		} catch (error) {
 			setErrorMsg('Username Is Not Available!');
-			// console.log(`the error is ${error}`)
 			setUsernameAvailable(false);
 		}
 		setUsernameLoading(false);
