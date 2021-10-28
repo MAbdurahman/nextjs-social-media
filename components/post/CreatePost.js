@@ -28,7 +28,29 @@ export default function CreatePost({ user, setPosts }) {
 
 	const handleSubmit = async e => {
 		e.preventDefault();
-		console.log('handle submit');
+		setLoading(true);
+		let picUrl;
+
+		if (media !== null) {
+			picUrl = await uploadPic(media);
+			if (!picUrl) {
+				setLoading(false);
+				return setError('Error Uploading Image');
+			}
+		}
+
+		await submitNewPost(
+			newPost.text,
+			newPost.location,
+			picUrl,
+			setPosts,
+			setNewPost,
+			setError
+		);
+
+		setMedia(null);
+		setMediaPreview(null);
+		setLoading(false);
 	};
 
 	const addStyles = () => ({
