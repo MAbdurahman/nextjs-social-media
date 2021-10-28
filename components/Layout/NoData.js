@@ -30,6 +30,7 @@ export const NoMessages = () => (
 
 export const NoPosts = () => (
   <Message
+  style={{marginTop: '1em'}}
     info
     icon="meh"
     header="Hey!"

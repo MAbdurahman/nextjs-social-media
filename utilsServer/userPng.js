@@ -1,2 +1,2 @@
 const userPng =
-  "https://res.cloudinary.com/indersingh/image/upload/v1593464618/App/user_mklcpl.png";
+	'https://res.cloudinary.com/mdbdrrhm/image/upload/v1635086610/people/default-user_dmmlom.png';
