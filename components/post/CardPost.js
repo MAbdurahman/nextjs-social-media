@@ -15,9 +15,9 @@ import PostComments from './PostComments';
 import CommentInputField from './CommentInputField';
 import calculateTime from '../../utils/calculateTime';
 import { deletePost, likePost } from '../../utils/postActions';
-import LikesList from './LikesList';
+/* import LikesList from './LikesList';
 import ImageModal from './ImageModal';
-import NoImageModal from './NoImageModal';
+import NoImageModal from './NoImageModal'; */
 
 export default function CardPost({ post, user, setPosts, setShowToastr }) {
 	//**************** variables ****************//
