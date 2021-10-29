@@ -16,20 +16,47 @@ import CommentInputField from './CommentInputField';
 import calculateTime from '../../utils/calculateTime';
 import { deletePost, likePost } from '../../utils/postActions';
 import LikesList from './LikesList';
-/* import ImageModal from './ImageModal';
-import NoImageModal from './NoImageModal'; */
+import ImageModal from './ImageModal';
+import NoImageModal from './NoImageModal';
 
 export default function CardPost({ post, user, setPosts, setShowToastr }) {
 	//**************** variables ****************//
 	const [likes, setLikes] = useState(post.likes);
 	const [comments, setComments] = useState(post.comments);
 	const [error, setError] = useState(null);
+	const [showModal, setShowModal] = useState(false);
 	const isLiked =
 		likes.length > 0 &&
 		likes.filter(like => like.user === user._id).length > 0;
 	//**************** functions ****************//
+	const addPropsToModal = () => ({
+		post,
+		user,
+		setLikes,
+		likes,
+		isLiked,
+		comments,
+		setComments,
+	});
+
 	return (
 		<>
+			{showModal && (
+				<Modal
+					open={showModal}
+					closeIcon
+					closeOnDimmerClick
+					onClose={() => setShowModal(false)}
+				>
+					<Modal.Content>
+						{post.picUrl ? (
+							<ImageModal {...addPropsToModal()} />
+						) : (
+							<NoImageModal {...addPropsToModal()} />
+						)}
+					</Modal.Content>
+				</Modal>
+			)}
 			<Segment basic>
 				<Card color='teal' fluid>
 					{post.picUrl && (
@@ -40,6 +67,7 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 							wrapped
 							ui={false}
 							alt='PostImage'
+							onClick={() => setShowModal(true)}
 						/>
 					)}
 					<Card.Content>
@@ -143,7 +171,13 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 									)
 							)}
 						{comments.length > 3 && (
-							<Button content='View More' color='teal' basic circular />
+							<Button
+								content='View More'
+								color='teal'
+								basic
+								circular
+								onClick={() => setShowModal(true)}
+							/>
 						)}
 						<Divider hidden />
 						<CommentInputField
