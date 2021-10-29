@@ -4,7 +4,7 @@ import { loginUser } from '../utils/authUser';
 import {
 	HeaderMessage,
 	FooterMessage,
-} from '../components/Common/WelcomeMessage';
+} from '../components/common/WelcomeMessage';
 import cookie from 'js-cookie';
 
 export default function Login() {

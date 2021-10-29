@@ -4,13 +4,12 @@ import {
 	HeaderMessage,
 	FooterMessage,
 } from './../components/common/WelcomeMessage';
-import CommonInputs from '../components/Common/CommonInputs';
-import ImageDropDiv from '../components/Common/ImageDropDiv';
+import CommonInputs from '../components/common/CommonInputs';
+import ImageDropDiv from '../components/common/ImageDropDiv';
 import axios from 'axios';
 import baseUrl from '../utils/baseUrl';
 import { registerUser } from '../utils/authUser';
 import uploadPic from '../utils/uploadPicToCloudinary';
-/* const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/; */
 let cancel;
 
 export default function Signup() {
