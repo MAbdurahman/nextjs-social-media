@@ -34,7 +34,7 @@ function Layout({ children, user }) {
 								</Sticky>
 							</Grid.Column>
 
-							<Grid.Column width={10}>
+							<Grid.Column width={10} style={{marginTop: '1em'}}>
 								<Visibility context={contextRef}>{children}</Visibility>
 							</Grid.Column>
 

@@ -57,7 +57,7 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 					</Modal.Content>
 				</Modal>
 			)}
-			<Segment basic>
+			<Segment basic >
 				<Card color='teal' fluid>
 					{post.picUrl && (
 						<Image
