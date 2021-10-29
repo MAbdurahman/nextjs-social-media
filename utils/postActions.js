@@ -69,8 +69,10 @@ export const postComment = async (postId, user, text, setComments, setText) => {
 
 		setComments(prev => [newComment, ...prev]);
 		setText('');
+
 	} catch (error) {
 		alert(catchErrors(error));
+
 	}
 };
 
@@ -81,5 +83,6 @@ export const deleteComment = async (postId, commentId, setComments) => {
 
 	} catch (error) {
 		alert(catchErrors(error));
+		
 	}
 };

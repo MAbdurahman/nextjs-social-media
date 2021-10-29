@@ -15,21 +15,48 @@ import PostComments from './PostComments';
 import CommentInputField from './CommentInputField';
 import calculateTime from '../../utils/calculateTime';
 import { deletePost, likePost } from '../../utils/postActions';
-/* import LikesList from './LikesList';
+import LikesList from './LikesList';
 import ImageModal from './ImageModal';
-import NoImageModal from './NoImageModal'; */
+import NoImageModal from './NoImageModal';
 
 export default function CardPost({ post, user, setPosts, setShowToastr }) {
 	//**************** variables ****************//
 	const [likes, setLikes] = useState(post.likes);
 	const [comments, setComments] = useState(post.comments);
 	const [error, setError] = useState(null);
+	const [showModal, setShowModal] = useState(false);
 	const isLiked =
 		likes.length > 0 &&
 		likes.filter(like => like.user === user._id).length > 0;
 	//**************** functions ****************//
+	const addPropsToModal = () => ({
+		post,
+		user,
+		setLikes,
+		likes,
+		isLiked,
+		comments,
+		setComments,
+	});
+
 	return (
 		<>
+			{showModal && (
+				<Modal
+					open={showModal}
+					closeIcon
+					closeOnDimmerClick
+					onClose={() => setShowModal(false)}
+				>
+					<Modal.Content>
+						{post.picUrl ? (
+							<ImageModal {...addPropsToModal()} />
+						) : (
+							<NoImageModal {...addPropsToModal()} />
+						)}
+					</Modal.Content>
+				</Modal>
+			)}
 			<Segment basic>
 				<Card color='teal' fluid>
 					{post.picUrl && (
@@ -40,6 +67,7 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 							wrapped
 							ui={false}
 							alt='PostImage'
+							onClick={() => setShowModal(true)}
 						/>
 					)}
 					<Card.Content>
@@ -101,15 +129,29 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 							name={isLiked ? 'heart' : 'heart outline'}
 							color='red'
 							style={{ cursor: 'pointer' }}
+							onClick={() =>
+								likePost(
+									post._id,
+									user._id,
+									setLikes,
+									isLiked ? false : true
+								)
+							}
 						/>
 
-						{likes.length > 0 && (
-							<span className='spanLikesList'>
-								{`${likes.length} ${
-									likes.length === 1 ? 'like' : 'likes'
-								}`}
-							</span>
-						)}
+						<LikesList
+							postId={post._id}
+							trigger={
+								likes.length > 0 && (
+									<span className='spanLikesList'>
+										{`${likes.length} ${
+											likes.length === 1 ? 'like' : 'likes'
+										}`}
+									</span>
+								)
+							}
+						/>
+
 						<Icon
 							name='comment outline'
 							style={{ marginLeft: '7px' }}
@@ -129,7 +171,13 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 									)
 							)}
 						{comments.length > 3 && (
-							<Button content='View More' color='teal' basic circular />
+							<Button
+								content='View More'
+								color='teal'
+								basic
+								circular
+								onClick={() => setShowModal(true)}
+							/>
 						)}
 						<Divider hidden />
 						<CommentInputField
