@@ -101,6 +101,14 @@ export default function CardPost({ post, user, setPosts, setShowToastr }) {
 							name={isLiked ? 'heart' : 'heart outline'}
 							color='red'
 							style={{ cursor: 'pointer' }}
+							onClick={() =>
+								likePost(
+									post._id,
+									user._id,
+									setLikes,
+									isLiked ? false : true
+								)
+							}
 						/>
 
 						{likes.length > 0 && (
