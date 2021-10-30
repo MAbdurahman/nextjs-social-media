@@ -11,6 +11,7 @@ import CardPost from '../components/post/CardPost';
 import ProfileMenuTabs from '../components/profile/ProfileMenuTabs';
 import ProfileHeader from './../components/profile/ProfileHeader';
 import Followers from './../components/profile/Followers';
+import Following from './../components/profile/Following';
 import { PostDeleteToastr } from '../components/Layout/Toastr';
 
 export default function ProfilePage({
@@ -111,6 +112,14 @@ export default function ProfilePage({
 						)}
 						{activeItem === 'followers' && (
 							<Followers
+								user={user}
+								loggedUserFollowStats={loggedUserFollowStats}
+								setUserFollowStats={setUserFollowStats}
+								profileUserId={profile.user._id}
+							/>
+						)}
+						{activeItem === 'following' && (
+							<Following
 								user={user}
 								loggedUserFollowStats={loggedUserFollowStats}
 								setUserFollowStats={setUserFollowStats}
