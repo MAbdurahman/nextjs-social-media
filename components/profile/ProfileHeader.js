@@ -123,7 +123,7 @@ export default function ProfileHeader({
 								content={isFollowing ? 'Following' : 'Follow'}
 								icon={isFollowing ? 'check circle' : 'add user'}
 								color={isFollowing ? 'instagram' : 'twitter'}
-/* 								onClick={async () => {
+								onClick={async () => {
 									setLoading(true);
 									isFollowing
 										? await unfollowUser(
@@ -135,7 +135,7 @@ export default function ProfileHeader({
 												setUserFollowStats
 										);
 									setLoading(false);
-								}} */
+								}} 
 							/>
 						)}{' '}
 					</Grid.Column>{' '}

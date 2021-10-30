@@ -64,7 +64,7 @@ export default function Followers({
 											icon={isFollowing ? 'check' : 'add user'}
 											content={isFollowing ? 'Following' : 'Follow'}
 											disabled={followLoading}
-/* 											onClick={() => {
+											onClick={() => {
 												setFollowLoading(true);
 
 												isFollowing
@@ -78,7 +78,7 @@ export default function Followers({
 													);
 
 												setFollowLoading(false);
-											}} */
+											}}
 										/>
 									)}
 								</List.Content>

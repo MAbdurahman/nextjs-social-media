@@ -37,7 +37,6 @@ export default function Following({
 		};
 
 		getFollowing();
-
 	}, []);
 	return (
 		<>
@@ -65,21 +64,21 @@ export default function Following({
 											icon={isFollowing ? 'check' : 'add user'}
 											content={isFollowing ? 'Following' : 'Follow'}
 											disabled={followLoading}
-											/* 											onClick={() => {
+											onClick={() => {
 												setFollowLoading(true);
 
 												isFollowing
 													? unfollowUser(
 															profileFollowing.user._id,
 															setUserFollowStats
-													)
+                                       )
 													: followUser(
 															profileFollowing.user._id,
 															setUserFollowStats
 													);
 
 												setFollowLoading(false);
-											}} */
+											}}
 										/>
 									)}
 								</List.Content>
