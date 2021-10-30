@@ -5,6 +5,8 @@ import baseUrl from '../utils/baseUrl';
 import { parseCookies } from 'nookies';
 import cookie from 'js-cookie';
 import { NoProfile } from './../components/Layout/NoData';
+import { Grid } from 'semantic-ui-react';
+import ProfileMenuTabs from '../components/profile/ProfileMenuTabs';
 
 export default function ProfilePage({
 	errorLoading,
@@ -18,9 +20,14 @@ export default function ProfilePage({
 	const router = useRouter();
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
+   const [activeItem, setActiveItem] = useState('profile');
+	const ownAccount = profile.user._id === user._id;
+	const [loggedUserFollowStats, setUserFollowStats] =
+		useState(userFollowStats);
+
 
 	//**************** functions ****************//
-	if (errorLoading) return <NoProfile />;
+	const handleItemClick = clickedTab => setActiveItem(clickedTab);
 
 	useEffect(() => {
 		const getPosts = async () => {
@@ -36,7 +43,6 @@ export default function ProfilePage({
 				);
 
 				setPosts(res.data);
-
 			} catch (error) {
 				alert('Error Loading Posts');
 			}
@@ -45,13 +51,26 @@ export default function ProfilePage({
 		};
 
 		getPosts();
-      
 	}, [router.query.username]);
 
+	if (errorLoading) return <NoProfile />;
 	return (
-		<div>
-			<h2>profile page</h2>
-		</div>
+		<>
+			<Grid stackable>
+				<Grid.Row>
+					<Grid.Column>
+						<ProfileMenuTabs
+							activeItem={activeItem}
+							handleItemClick={handleItemClick}
+							followersLength={followersLength}
+							followingLength={followingLength}
+							ownAccount={ownAccount}
+							loggedUserFollowStats={loggedUserFollowStats}
+						/>
+					</Grid.Column>
+				</Grid.Row>
+			</Grid>
+		</>
 	);
 }
 

@@ -4,6 +4,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 const UserModel = require('../models/UserModel');
 const PostModel = require('../models/PostModel');
 const FollowerModel = require('../models/FollowerModel');
+const ProfileModel = require('../models/ProfileModel');
+const bcrypt = require('bcryptjs');
 
 /*=============================================
             Get Profile Info
