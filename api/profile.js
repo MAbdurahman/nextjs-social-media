@@ -248,7 +248,9 @@ router.post('/update', authMiddleware, async (req, res) => {
 	}
 });
 
-// UPDATE PASSWORD
+/*=============================================
+               Update Password
+================================================*/
 router.post('/settings/password', authMiddleware, async (req, res) => {
 	try {
 		const { currentPassword, newPassword } = req.body;
@@ -277,7 +279,9 @@ router.post('/settings/password', authMiddleware, async (req, res) => {
 	}
 });
 
-// UPDATE MESSAGE POPUP SETTINGS
+/*=============================================
+            Update Message Popup
+================================================*/
 router.post('/settings/messagePopup', authMiddleware, async (req, res) => {
 	try {
 		const user = await UserModel.findById(req.userId);
