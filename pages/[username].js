@@ -10,6 +10,7 @@ import { PlaceHolderPosts } from './../components/Layout/PlaceHolderGroup';
 import CardPost from '../components/post/CardPost';
 import ProfileMenuTabs from '../components/profile/ProfileMenuTabs';
 import ProfileHeader from './../components/profile/ProfileHeader';
+import Followers from './../components/profile/Followers';
 import { PostDeleteToastr } from '../components/Layout/Toastr';
 
 export default function ProfilePage({
@@ -65,7 +66,7 @@ export default function ProfilePage({
 	return (
 		<>
 			{showToastr && <PostDeleteToastr />}
-         
+
 			<Grid stackable>
 				<Grid.Row>
 					<Grid.Column>
@@ -107,6 +108,14 @@ export default function ProfilePage({
 									<NoProfilePosts />
 								)}
 							</>
+						)}
+						{activeItem === 'followers' && (
+							<Followers
+								user={user}
+								loggedUserFollowStats={loggedUserFollowStats}
+								setUserFollowStats={setUserFollowStats}
+								profileUserId={profile.user._id}
+							/>
 						)}
 					</Grid.Column>
 				</Grid.Row>
