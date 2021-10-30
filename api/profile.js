@@ -204,7 +204,9 @@ router.put('/unfollow/:userToUnfollowId', authMiddleware, async (req, res) => {
 	}
 });
 
-// UPDATE PROFILE
+/*=============================================
+            Update User Profile
+================================================*/
 router.post('/update', authMiddleware, async (req, res) => {
 	try {
 		const { userId } = req;
