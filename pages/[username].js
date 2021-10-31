@@ -13,6 +13,7 @@ import ProfileHeader from './../components/profile/ProfileHeader';
 import Followers from './../components/profile/Followers';
 import Following from './../components/profile/Following';
 import UpdateProfile from './../components/profile/ProfileUpdate';
+import Settings from '../components/profile/Settings'
 import { PostDeleteToastr } from '../components/Layout/Toastr';
 
 
@@ -130,6 +131,9 @@ export default function ProfilePage({
 						)}
 						{activeItem === 'updateProfile' && (
 							<UpdateProfile Profile={profile} />
+						)}
+						{activeItem === 'settings' && (
+							<Settings newMessagePopup={user.newMessagePopup} />
 						)}
 					</Grid.Column>
 				</Grid.Row>
