@@ -57,6 +57,7 @@ export const profileUpdate = async (
 
 		setLoading(false);
 		Router.reload();
+		
 	} catch (error) {
 		setError(catchErrors(error));
 		setLoading(false);
