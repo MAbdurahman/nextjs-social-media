@@ -1,18 +1,98 @@
 import React, { useEffect, useState } from 'react';
 import { Feed, Segment, Divider, Container } from 'semantic-ui-react';
 import axios from 'axios';
-import baseUrl from '../utils/baseUrl';
+import baseUrl from './../utils/baseUrl';
 import { parseCookies } from 'nookies';
 import cookie from 'js-cookie';
+import { NoNotifications } from './../components/Layout/NoData';
+import LikeNotification from './../components/Notifications/LikeNotification';
+import CommentNotification from './../components/Notifications/CommentNotification';
+import FollowerNotification from './../components/Notifications/FollowerNotification';
 
-export default function Notifications({ notifications, errorLoading, user, userFollowStats }) {
+export default function Notifications({
+	notifications,
+	errorLoading,
+	user,
+	userFollowStats,
+}) {
 	//**************** variables ****************//
-   
+	const [loggedUserFollowStats, setUserFollowStats] =
+		useState(userFollowStats);
 	//**************** functions ****************//
+	useEffect(() => {
+		const notificationRead = async () => {
+			try {
+				await axios.post(
+					`${baseUrl}/api/notifications`,
+					{},
+					{ headers: { Authorization: cookie.get('token') } }
+				);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+      return () => {
+
+         notificationRead();
+      }
+
+	}, []);
+
 	return (
-		<div>
-			<h2>this is pages/notifications.js</h2>
-		</div>
+		<>
+			<Container style={{ marginTop: '1.5rem' }}>
+				{notifications.length > 0 ? (
+					<Segment color='teal' raised>
+						<div
+							style={{
+								maxHeight: '40rem',
+								overflow: 'auto',
+								height: '40rem',
+								position: 'relative',
+								width: '100%',
+							}}
+						>
+							<Feed size='small'>
+								{notifications.map(notification => (
+									<>
+										{notification.type === 'newLike' &&
+											notification.post !== null && (
+												<LikeNotification
+													key={notification._id}
+													notification={notification}
+												/>
+											)}
+
+										{notification.type === 'newComment' &&
+											notification.post !== null && (
+												<CommentNotification
+													key={notification._id}
+													notification={notification}
+												/>
+											)}
+
+										{notification.type === 'newFollower' && (
+											<FollowerNotification
+												key={notification._id}
+												notification={notification}
+												loggedUserFollowStats={
+													loggedUserFollowStats
+												}
+												setUserFollowStats={setUserFollowStats}
+											/>
+										)}
+									</>
+								))}
+							</Feed>
+						</div>
+					</Segment>
+				) : (
+					<NoNotifications />
+				)}
+				<Divider hidden />
+			</Container>
+		</>
 	);
 }
 
