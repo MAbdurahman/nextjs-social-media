@@ -6,9 +6,7 @@ import Layout from '../components/Layout/Layout';
 import 'react-toastify/dist/ReactToastify.css';
 import 'semantic-ui-css/semantic.min.css';
 
-
 function MyApp({ Component, pageProps }) {
-
 	return (
 		<Layout {...pageProps}>
 			<Component {...pageProps} />
@@ -17,35 +15,38 @@ function MyApp({ Component, pageProps }) {
 }
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
-		const { token } = parseCookies(ctx);
-		let pageProps = {};
+	const { token } = parseCookies(ctx);
+	let pageProps = {};
 
-		const protectedRoutes = ctx.pathname === '/' || ctx.pathname === '/[username]';
+	const protectedRoutes =
+		ctx.pathname === '/' ||
+		ctx.pathname === '/[username]' ||
+		ctx.pathname === '/notifications';
 
-		if (!token) {
-			protectedRoutes && redirectUser(ctx, '/login');
-		} else {
-			if (Component.getInitialProps) {
-				pageProps = await Component.getInitialProps(ctx);
-			}
-
-			try {
-				const res = await axios.get(`${baseUrl}/api/auth`, {
-					headers: { Authorization: token },
-				});
-
-				const { user, userFollowStats } = res.data;
-
-				if (user) !protectedRoutes && redirectUser(ctx, '/');
-
-				pageProps.user = user;
-				pageProps.userFollowStats = userFollowStats;
-			} catch (error) {
-				destroyCookie(ctx, 'token');
-				redirectUser(ctx, '/login');
-			}
+	if (!token) {
+		protectedRoutes && redirectUser(ctx, '/login');
+	} else {
+		if (Component.getInitialProps) {
+			pageProps = await Component.getInitialProps(ctx);
 		}
 
-		return { pageProps };
-}
+		try {
+			const res = await axios.get(`${baseUrl}/api/auth`, {
+				headers: { Authorization: token },
+			});
+
+			const { user, userFollowStats } = res.data;
+
+			if (user) !protectedRoutes && redirectUser(ctx, '/');
+
+			pageProps.user = user;
+			pageProps.userFollowStats = userFollowStats;
+		} catch (error) {
+			destroyCookie(ctx, 'token');
+			redirectUser(ctx, '/login');
+		}
+	}
+
+	return { pageProps };
+};
 export default MyApp;

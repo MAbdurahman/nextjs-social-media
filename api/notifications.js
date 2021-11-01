@@ -13,6 +13,7 @@ router.get('/', authMiddleware, async (req, res) => {
 			.populate('notifications.post');
 
 		return res.json(user.notifications);
+		
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send('Server Error');
