@@ -96,6 +96,7 @@ export default function Settings({ newMessagePopup }) {
 										popupSetting,
 										setPopupSetting,
 										setSuccess
+										
 									)
 								}
 							/>
