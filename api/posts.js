@@ -5,6 +5,10 @@ const UserModel = require('../models/UserModel');
 const PostModel = require('../models/PostModel');
 const FollowerModel = require('../models/FollowerModel');
 const uuid = require('uuid').v4;
+const {
+	newLikeNotification,
+	removeLikeNotification,
+} = require('./../utilsServer/notificationActions');
 
 /*=============================================
             Create A Post 
@@ -52,7 +56,6 @@ router.get('/', authMiddleware, async (req, res) => {
 				.sort({ createdAt: -1 })
 				.populate('user')
 				.populate('comments.user');
-
 		} else {
 			const skips = size * (number - 1);
 			posts = await PostModel.find()
@@ -76,7 +79,6 @@ router.get('/', authMiddleware, async (req, res) => {
 			postsToBeSent = posts.filter(
 				post => post.user._id.toString() === userId
 			);
-
 		} else {
 			for (let i = 0; i < loggedUser.following.length; i++) {
 				const foundPostsFromFollowing = posts.filter(
@@ -101,7 +103,6 @@ router.get('/', authMiddleware, async (req, res) => {
 			]);
 
 		return res.json(postsToBeSent);
-		
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
@@ -184,6 +185,10 @@ router.post('/like/:postId', authMiddleware, async (req, res) => {
 		await post.likes.unshift({ user: userId });
 		await post.save();
 
+		if (post.user.toString() !== userId) {
+			await newLikeNotification(userId, postId, post.user.toString());
+		}
+
 		return res.status(200).send('Post Liked');
 	} catch (error) {
 		console.error(error);
@@ -219,6 +224,10 @@ router.put('/unlike/:postId', authMiddleware, async (req, res) => {
 		await post.likes.splice(index, 1);
 
 		await post.save();
+
+		if (post.user.toString() !== userId) {
+			await removeLikeNotification(userId, postId, post.user.toString());
+		}
 
 		return res.status(200).send('Post Unliked');
 	} catch (error) {
