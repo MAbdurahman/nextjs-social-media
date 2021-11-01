@@ -28,11 +28,9 @@ router.post('/', authMiddleware, async (req, res) => {
 		const postCreated = await PostModel.findById(post._id).populate('user');
 
 		return res.json(postCreated);
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-
 	}
 });
 
@@ -63,15 +61,50 @@ router.get('/', authMiddleware, async (req, res) => {
 				.sort({ createdAt: -1 })
 				.populate('user')
 				.populate('comments.user');
-
 		}
 
-		return res.json(posts);
+		if (posts.length === 0) {
+			return res.json([]);
+		}
 
+		let postsToBeSent = [];
+		const { userId } = req;
+
+		const loggedUser = await FollowerModel.findOne({ user: userId });
+
+		if (loggedUser.following.length === 0) {
+			postsToBeSent = posts.filter(
+				post => post.user._id.toString() === userId
+			);
+
+		} else {
+			for (let i = 0; i < loggedUser.following.length; i++) {
+				const foundPostsFromFollowing = posts.filter(
+					post =>
+						post.user._id.toString() ===
+						loggedUser.following[i].user.toString()
+				);
+
+				if (foundPostsFromFollowing.length > 0)
+					postsToBeSent.push(...foundPostsFromFollowing);
+			}
+
+			const foundOwnPosts = posts.filter(
+				post => post.user._id.toString() === userId
+			);
+			if (foundOwnPosts.length > 0) postsToBeSent.push(...foundOwnPosts);
+		}
+
+		postsToBeSent.length > 0 &&
+			postsToBeSent.sort((a, b) => [
+				new Date(b.createdAt) - new Date(a.createdAt),
+			]);
+
+		return res.json(postsToBeSent);
+		
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-
 	}
 });
 
@@ -89,11 +122,9 @@ router.get('/:postId', authMiddleware, async (req, res) => {
 		}
 
 		return res.json(post);
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-
 	}
 });
 
@@ -117,20 +148,16 @@ router.delete('/:postId', authMiddleware, async (req, res) => {
 			if (user.role === 'root') {
 				await post.remove();
 				return res.status(200).send('Post Deleted Successfully');
-
 			} else {
 				return res.status(401).send('Unauthorized');
-
 			}
 		}
 
 		await post.remove();
 		return res.status(200).send('Post Deleted Successfully');
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-
 	}
 });
 
@@ -158,7 +185,6 @@ router.post('/like/:postId', authMiddleware, async (req, res) => {
 		await post.save();
 
 		return res.status(200).send('Post Liked');
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
@@ -195,11 +221,9 @@ router.put('/unlike/:postId', authMiddleware, async (req, res) => {
 		await post.save();
 
 		return res.status(200).send('Post Unliked');
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-
 	}
 });
 
@@ -216,11 +240,9 @@ router.get('/like/:postId', authMiddleware, async (req, res) => {
 		}
 
 		return res.status(200).json(post.likes);
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
-
 	}
 });
 
@@ -251,7 +273,6 @@ router.post('/comment/:postId', authMiddleware, async (req, res) => {
 		await post.save();
 
 		return res.status(200).json(newComment._id);
-
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
@@ -291,15 +312,12 @@ router.delete('/:postId/:commentId', authMiddleware, async (req, res) => {
 		if (comment.user.toString() !== userId) {
 			if (user.role === 'root') {
 				await deleteComment();
-
 			} else {
 				return res.status(401).send('Unauthorized');
-
 			}
 		}
 
 		await deleteComment();
-		
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);
