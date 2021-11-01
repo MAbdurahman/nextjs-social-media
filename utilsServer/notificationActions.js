@@ -14,7 +14,6 @@ const setNotificationToUnread = async userId => {
 		}
 
 		return;
-
 	} catch (error) {
 		console.error(error);
 	}
@@ -40,7 +39,6 @@ const newLikeNotification = async (userId, postId, userToNotifyId) => {
 
 		await setNotificationToUnread(userToNotifyId);
 		return;
-
 	} catch (error) {
 		console.error(error);
 	}
@@ -101,7 +99,6 @@ const newCommentNotification = async (
 		await setNotificationToUnread(userToNotifyId);
 
 		return;
-
 	} catch (error) {
 		console.error(error);
 	}
@@ -136,18 +133,48 @@ const removeCommentNotification = async (
 	}
 };
 /*=============================================
-          
+            newFollowerNotification
 ================================================*/
+const newFollowerNotification = async (userId, userToNotifyId) => {
+	try {
+		const user = await NotificationModel.findOne({ user: userToNotifyId });
+
+		const newNotification = {
+			type: 'newFollower',
+			user: userId,
+			date: Date.now(),
+		};
+
+		await user.notifications.unshift(newNotification);
+		await user.save();
+		await setNotificationToUnread(userToNotifyId);
+
+		return;
+	} catch (error) {
+		console.error(error);
+	}
+};
 /*=============================================
-          
+            removeFollowerNotification
 ================================================*/
-/*=============================================
-          
-================================================*/
+const removeFollowerNotification = async (userId, userToNotifyId) => {
+	try {
+		await NotificationModel.findOneAndUpdate(
+			{ user: userToNotifyId },
+			{ $pull: { notifications: { type: 'newFollower', user: userId } } }
+		);
+
+		return;
+	} catch (error) {
+		console.error(error);
+	}
+};
 
 module.exports = {
-   newLikeNotification,
-   removeLikeNotification,
-   newCommentNotification,
-   removeCommentNotification,
-}
+	newLikeNotification,
+	removeLikeNotification,
+	newCommentNotification,
+	removeCommentNotification,
+	newFollowerNotification,
+	removeFollowerNotification,
+};
