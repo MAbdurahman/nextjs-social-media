@@ -73,11 +73,68 @@ const removeLikeNotification = async (userId, postId, userToNotifyId) => {
 };
 
 /*=============================================
-          
+            newCommentNotification
 ================================================*/
+const newCommentNotification = async (
+	postId,
+	commentId,
+	userId,
+	userToNotifyId,
+	text
+) => {
+	try {
+		const userToNotify = await NotificationModel.findOne({
+			user: userToNotifyId,
+		});
+
+		const newNotification = {
+			type: 'newComment',
+			user: userId,
+			post: postId,
+			commentId,
+			text,
+			date: Date.now(),
+		};
+
+		await userToNotify.notifications.unshift(newNotification);
+		await userToNotify.save();
+		await setNotificationToUnread(userToNotifyId);
+
+		return;
+
+	} catch (error) {
+		console.error(error);
+	}
+};
 /*=============================================
-          
+            removeCommentNotification
 ================================================*/
+const removeCommentNotification = async (
+	postId,
+	commentId,
+	userId,
+	userToNotifyId
+) => {
+	try {
+		await NotificationModel.findOneAndUpdate(
+			{ user: userToNotifyId },
+			{
+				$pull: {
+					notifications: {
+						type: 'newComment',
+						user: userId,
+						post: postId,
+						commentId: commentId,
+					},
+				},
+			}
+		);
+
+		return;
+	} catch (error) {
+		console.error(error);
+	}
+};
 /*=============================================
           
 ================================================*/
@@ -91,5 +148,6 @@ const removeLikeNotification = async (userId, postId, userToNotifyId) => {
 module.exports = {
    newLikeNotification,
    removeLikeNotification,
-   setNotificationToUnread
+   newCommentNotification,
+   removeCommentNotification,
 }
