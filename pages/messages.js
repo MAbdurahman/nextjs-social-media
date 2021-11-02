@@ -4,12 +4,33 @@ import axios from 'axios';
 import baseUrl from '../utils/baseUrl';
 import { parseCookies } from 'nookies';
 import { useRouter } from 'next/router';
-import { Segment, Header, Divider, Comment, Grid } from 'semantic-ui-react';
+import { Segment, Header, Divider, Comment, Grid, Icon } from 'semantic-ui-react';
+import Chat from './../components/chats/Chat';
+import ChatListSearch from './../components/chats/ChatListSearch';
+import { NoMessages } from './../components/Layout/NoData';
 
 export default function Messages({ chatsData, user }) {
 	//**************** variables ****************//
 	const [chats, setChats] = useState(chatsData);
+   const router = useRouter();
 	//**************** functions ****************//
+
+
+
+
+
+useEffect(() => {
+   if (chats && chats.length > 0 && !router.query.message) {
+                  router.push(
+							`/messages?message=${chats[0].messagesWith}`,
+							undefined,
+							{
+								shallow: true,
+							}
+						);
+   }
+}, []);
+   
 	return (
 		<>
 			<Segment padded basic size='large' style={{ marginTop: '5px' }}>
@@ -19,8 +40,76 @@ export default function Messages({ chatsData, user }) {
 					onClick={() => router.push('/')}
 					style={{ cursor: 'pointer' }}
 				/>
-				<h2>this is messages.js</h2>
+				
 				<Divider hidden />
+
+				<div style={{ marginBottom: '10px' }}>
+					<ChatListSearch user={user} setChats={setChats} />
+				</div>
+
+				{chats.length > 0 ? (
+					<>
+						<Grid stackable>
+							<Grid.Column width={4}>
+								<Comment.Group size='big'>
+									<Segment
+										raised
+										style={{ overflow: 'auto', maxHeight: '32rem' }}
+									>
+										{chats.map((chat, i) => (
+											<Chat
+												key={i}
+                                    chat={chat}
+                                    setChats={setChats}
+/* 												chat={chat}
+												connectedUsers={connectedUsers}
+												deleteChat={deleteChat} */
+											/>
+										))}
+									</Segment>
+								</Comment.Group>
+							</Grid.Column>
+
+							<Grid.Column width={12}>
+								{router.query.message && (
+									<>
+										<div
+											style={{
+												overflow: 'auto',
+												overflowX: 'hidden',
+												maxHeight: '35rem',
+												height: '35rem',
+												backgroundColor: 'whitesmoke',
+											}}
+										>
+											<div style={{ position: 'sticky', top: '0' }}>
+												<Banner /* bannerData={bannerData} */ />
+											</div>
+
+											{messages.length > 0 &&
+												messages.map((message, i) => (
+													<Message
+														// divRef={divRef}
+														// key={i}
+														// bannerProfilePic={
+														// 	bannerData.profilePicUrl
+														// }
+														// message={message}
+														// user={user}
+														// deleteMsg={deleteMsg}
+													/>
+												))}
+										</div>
+
+										<MessageInputField sendMsg={sendMsg} />
+									</>
+								)}
+							</Grid.Column>
+						</Grid>
+					</>
+				) : (
+					<NoMessages />
+				)}
 			</Segment>
 		</>
 	);
