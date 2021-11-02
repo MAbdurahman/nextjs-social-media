@@ -32,11 +32,7 @@ export default function Notifications({
 			}
 		};
 
-      return () => {
-
-         notificationRead();
-      }
-
+		notificationRead();
 	}, []);
 
 	return (
