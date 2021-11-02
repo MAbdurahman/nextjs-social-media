@@ -13,13 +13,55 @@ export default function ChatListSearch() {
 	const [results, setResults] = useState([]);
 	const router = useRouter();
 	//**************** functions ****************//
-   const handleChange = async e => {
-      console.log('handle change')
-   }
+	const handleChange = async e => {
+		const { value } = e.target;
+		setText(value);
+		setLoading(true);
 
-   const addChat = (result)=> {
+		try {
+			cancel && cancel();
+			const CancelToken = axios.CancelToken;
+			const token = cookie.get('token');
 
-   }
+			const res = await axios.get(`${baseUrl}/api/search/${value}`, {
+				headers: { Authorization: token },
+				cancelToken: new CancelToken(canceler => {
+					cancel = canceler;
+				}),
+			});
+
+			if (res.data.length === 0) return setLoading(false);
+
+			setResults(res.data);
+		} catch (error) {
+			alert('Error Searching');
+		}
+
+		setLoading(false);
+	};
+
+	const addChat = result => {
+		const alreadyInChat =
+			chats.length > 0 &&
+			chats.filter(chat => chat.messagesWith === result._id).length > 0;
+
+		if (alreadyInChat) {
+			return router.push(`/messages?message=${result._id}`);
+		} else {
+			const newChat = {
+				messagesWith: result._id,
+				name: result.name,
+				profilePicUrl: result.profilePicUrl,
+				lastMessage: '',
+				date: Date.now(),
+			};
+
+			setChats(prev => [newChat, ...prev]);
+
+			return router.push(`/messages?message=${result._id}`);
+		}
+	};
+
 	return (
 		<Search
 			onBlur={() => {
