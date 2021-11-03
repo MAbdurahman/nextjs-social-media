@@ -46,6 +46,7 @@ router.get('/user/:userToFindId', authMiddleware, async (req, res) => {
 		}
 
 		return res.json({ name: user.name, profilePicUrl: user.profilePicUrl });
+		
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send('Server Error');
