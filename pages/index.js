@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import io from 'socket.io-client';
 import axios from 'axios';
 import baseUrl from '../utils/baseUrl';
 import CreatePost from './../components/post/CreatePost';
@@ -13,6 +14,9 @@ import {
 	EndMessage,
 } from '../components/Layout/PlaceHolderGroup';
 import cookie from 'js-cookie';
+import MessageNotificationModal from '../components/home/MessageNotificationModal';
+import getUserInfo from '../utils/getUserInfo';
+import newMsgSound from '../utils/newMsgSound';
 
 export default function Index({ user, postsData, errorLoading }) {
 	//**************** variables ****************//
@@ -20,9 +24,43 @@ export default function Index({ user, postsData, errorLoading }) {
 	const [showToastr, setShowToastr] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const [pageNumber, setPageNumber] = useState(2);
+	const socket = useRef();
+
+	const [newMessageReceived, setNewMessageReceived] = useState(null);
+	const [newMessageModal, showNewMessageModal] = useState(false);
 	//**************** functions ****************//
 	useEffect(() => {
+		if (!socket.current) {
+			socket.current = io(baseUrl);
+		}
+
+		if (socket.current) {
+			socket.current.emit('join', { userId: user._id });
+
+			socket.current.on('newMsgReceived', async ({ newMsg }) => {
+				const { name, profilePicUrl } = await getUserInfo(newMsg.sender);
+
+				if (user.newMessagePopup) {
+					setNewMessageReceived({
+						...newMsg,
+						senderName: name,
+						senderProfilePic: profilePicUrl,
+					});
+					showNewMessageModal(true);
+				}
+				newMsgSound(name);
+			});
+		}
+
 		document.title = `Welcome, ${user.name.split(' ')[0]}`;
+
+		return () => {
+			if (socket.current) {
+				socket.current.emit('disconnect');
+				socket.current.off();
+			}
+		};
+
 	}, []);
 
 	useEffect(() => {
@@ -45,11 +83,21 @@ export default function Index({ user, postsData, errorLoading }) {
 		}
 	};
 
-	// if (posts.length === 0 || errorLoading) return <NoPosts />;
+	if (posts.length === 0 || errorLoading) return <NoPosts />;
 
 	return (
 		<>
 			{showToastr && <PostDeleteToastr />}
+
+			{newMessageModal && newMessageReceived !== null && (
+				<MessageNotificationModal
+					socket={socket}
+					showNewMessageModal={showNewMessageModal}
+					newMessageModal={newMessageModal}
+					newMessageReceived={newMessageReceived}
+					user={user}
+				/>
+			)}
 			<Segment>
 				<CreatePost user={user} setPosts={setPosts} />
 				{posts.length === 0 || errorLoading ? (

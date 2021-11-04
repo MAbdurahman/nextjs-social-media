@@ -22,6 +22,10 @@ import getUserInfo from './../utils/getUserInfo';
 import newMsgSound from './../utils/newMsgSound';
 import cookie from 'js-cookie';
 
+const scrollDivToBottom = divRef =>
+	divRef.current !== null &&
+	divRef.current.scrollIntoView({ behaviour: 'smooth' });
+
 export default function Messages({ chatsData, user }) {
 	//**************** variables ****************//
 	const [chats, setChats] = useState(chatsData);
@@ -37,7 +41,6 @@ export default function Messages({ chatsData, user }) {
 
 	const divRef = useRef();
 
-	
 	/*=========================================================
 		This ref is for persisting the state of query
 		string in url throughout re-renders.   This
@@ -160,13 +163,13 @@ export default function Messages({ chatsData, user }) {
 
 						return [...prev];
 					});
-
 				} else {
 					const ifPreviouslyMessaged =
 						chats.filter(chat => chat.messagesWith === newMsg.sender)
 							.length > 0;
 
-					if (ifPreviouslyMessaged) {//previous chat with sender
+					if (ifPreviouslyMessaged) {
+						//previous chat with sender
 						setChats(prev => {
 							const previousChat = prev.find(
 								chat => chat.messagesWith === newMsg.sender
@@ -183,8 +186,8 @@ export default function Messages({ chatsData, user }) {
 								),
 							];
 						});
-
-					} else {//no previous chat with the sender
+					} else {
+						//no previous chat with the sender
 						const { name, profilePicUrl } = await getUserInfo(
 							newMsg.sender
 						);
@@ -203,11 +206,47 @@ export default function Messages({ chatsData, user }) {
 
 				newMsgSound(senderName);
 			});
-
 		}
 	}, []);
 
-	useEffect(() => {}, []);
+	//scroll to bottom
+	useEffect(() => {
+		messages.length > 0 && scrollDivToBottom(divRef);
+	}, [messages]);
+
+	//delete message
+	const deleteMsg = messageId => {
+		if (socket.current) {
+			socket.current.emit('deleteMsg', {
+				userId: user._id,
+				messagesWith: openChatId.current,
+				messageId,
+			});
+
+			socket.current.on('msgDeleted', () => {
+				setMessages(prev =>
+					prev.filter(message => message._id !== messageId)
+				);
+			});
+		}
+	};
+
+	//delete chat
+	const deleteChat = async messagesWith => {
+		try {
+			await axios.delete(`${baseUrl}/api/chats/${messagesWith}`, {
+				headers: { Authorization: cookie.get('token') },
+			});
+
+			setChats(prev =>
+				prev.filter(chat => chat.messagesWith !== messagesWith)
+			);
+			router.push('/messages', undefined, { shallow: true });
+		} catch (error) {
+			alert('Error deleting chat');
+		}
+	};
+
 	return (
 		<>
 			<Segment padded basic size='large' style={{ marginTop: '5px' }}>
@@ -221,7 +260,7 @@ export default function Messages({ chatsData, user }) {
 				<Divider hidden />
 
 				<div style={{ marginBottom: '10px' }}>
-					<ChatListSearch user={user} setChats={setChats} />
+					<ChatListSearch chats={chats} setChats={setChats} />
 				</div>
 
 				{chats.length > 0 ? (
@@ -238,7 +277,7 @@ export default function Messages({ chatsData, user }) {
 												key={i}
 												chat={chat}
 												connectedUsers={connectedUsers}
-												// deleteChat={deleteChat}
+												deleteChat={deleteChat}
 											/>
 										))}
 									</Segment>

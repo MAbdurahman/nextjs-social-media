@@ -53,9 +53,8 @@ router.get('/user/:userToFindId', authMiddleware, async (req, res) => {
 	}
 });
 
-// Delete a chat
 /*=============================================
-          
+            Delete Chat
 ================================================*/
 router.delete(`/:messagesWith`, authMiddleware, async (req, res) => {
 	try {
@@ -69,7 +68,7 @@ router.delete(`/:messagesWith`, authMiddleware, async (req, res) => {
 		);
 
 		if (!chatToDelete) {
-			return res.status(404).send('Chat not found');
+			return res.status(404).send('Chat Not Found');
 		}
 
 		const indexOf = user.chats
@@ -81,6 +80,7 @@ router.delete(`/:messagesWith`, authMiddleware, async (req, res) => {
 		await user.save();
 
 		return res.status(200).send('Chat deleted');
+		
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send('Server Error');

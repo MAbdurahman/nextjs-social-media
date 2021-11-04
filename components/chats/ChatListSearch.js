@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import baseUrl from '../../utils/baseUrl';
 let cancel;
 
-export default function ChatListSearch() {
+export default function ChatListSearch({ chats, setChats }) {
 	//**************** variables ****************//
 	const [text, setText] = useState('');
 	const [loading, setLoading] = useState(false);
