@@ -49,6 +49,7 @@ export default function Messages({ chatsData, user }) {
 	const openChatId = useRef('');
 	//**************** functions ****************//
 
+
 	//connection
 	useEffect(() => {
 		if (!socket.current) {
@@ -126,7 +127,7 @@ export default function Messages({ chatsData, user }) {
 		}
 	};
 
-	//confirm message sent
+	//confirm and receive message (msgSent)
 	useEffect(() => {
 		if (socket.current) {
 			socket.current.on('msgSent', ({ newMsg }) => {
@@ -142,6 +143,7 @@ export default function Messages({ chatsData, user }) {
 
 						return [...prev];
 					});
+
 				}
 			});
 

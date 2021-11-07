@@ -11,6 +11,7 @@ const getUserInfo = async userToFindId => {
 		return { name: res.data.name, profilePicUrl: res.data.profilePicUrl };
 	} catch (error) {
 		console.error(error);
+		alert('Error looking for user!');
 	}
 };
 

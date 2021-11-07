@@ -15,6 +15,7 @@ export default function MessageInputField({ sendMsg }) {
 		e.preventDefault();
 		sendMsg(text);
 		setText('');
+		setLoading(false);
 	};
 
 	return (

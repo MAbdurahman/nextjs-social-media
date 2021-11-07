@@ -42,7 +42,7 @@ router.get('/user/:userToFindId', authMiddleware, async (req, res) => {
 		const user = await UserModel.findById(req.params.userToFindId);
 
 		if (!user) {
-			return res.status(404).send('No User found');
+			return res.status(404).send('No User Found');
 		}
 
 		return res.json({ name: user.name, profilePicUrl: user.profilePicUrl });

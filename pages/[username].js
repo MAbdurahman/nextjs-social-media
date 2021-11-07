@@ -54,6 +54,7 @@ export default function ProfilePage({
 				setPosts(res.data);
 			} catch (error) {
 				alert('Error Loading Posts');
+				setLoading(false);
 			}
 
 			setLoading(false);

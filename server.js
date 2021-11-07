@@ -52,7 +52,7 @@ io.on('connection', socket => {
 		const receiverSocket = findConnectedUser(msgSendToUserId);
 
 		if (receiverSocket) {
-			// WHEN YOU WANT TO SEND MESSAGE TO A PARTICULAR SOCKET
+			//send message to a particular socket
 			io.to(receiverSocket.socketId).emit('newMsgReceived', { newMsg });
 
 		} else {
@@ -77,8 +77,8 @@ io.on('connection', socket => {
 			const { newMsg, error } = await sendMsg(userId, msgSendToUserId, msg);
 			const receiverSocket = findConnectedUser(msgSendToUserId);
 
-			if (receiverSocket) {
-				// WHEN YOU WANT TO SEND MESSAGE TO A PARTICULAR SOCKET
+			if (receiverSocket) {//to send message to a particular socket
+			
 				io.to(receiverSocket.socketId).emit('newMsgReceived', { newMsg });
 				
 			} else {

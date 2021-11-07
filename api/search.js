@@ -12,6 +12,7 @@ router.get('/:searchText', authMiddleware, async (req, res) => {
 			return;
 		}
 
+
 		const results = await UserModel.find({
 			name: { $regex: searchText, $options: 'i' },
 		});
@@ -23,6 +24,7 @@ router.get('/:searchText', authMiddleware, async (req, res) => {
 		return res
 			.status(200)
 			.json(resultsToBeSent.length > 0 ? resultsToBeSent : results);
+
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send(`Server Error`);

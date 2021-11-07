@@ -35,6 +35,7 @@ export default function ChatListSearch({ chats, setChats }) {
 			setResults(res.data);
 		} catch (error) {
 			alert('Error Searching');
+			setLoading(false);
 		}
 
 		setLoading(false);

@@ -6,10 +6,9 @@ import calculateTime from '../../utils/calculateTime';
 export default function Chat({ chat, connectedUsers, deleteChat }) {
 	//**************** variables ****************//
 	const router = useRouter();
-	//**************** functions ****************//
-const isOnline =
-	connectedUsers.length > 0 &&
-	connectedUsers.filter(user => user.userId === chat.messagesWith).length > 0;
+	const isOnline =
+		connectedUsers.length > 0 &&
+		connectedUsers.filter(user => user.userId === chat.messagesWith).length > 0;
 	return (
 		<>
 			<List selection>
